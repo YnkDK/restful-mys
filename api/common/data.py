@@ -19,20 +19,19 @@ class Data(object):
 		""" Data object was deleted. Say goodbye
 		    to the database. Bye bye!
 		"""
-		# Expricit delete CSV dictionary
+		# Explicit delete CSV dictionary
 		del self.csv
 		
 		if self.pgsql is not None:
 			# If a postgresql connection
 			# was established, close it
 			self.pgsql.close()	
-		if len(shelves) > 0:
-			# If a shelve was opened,
-			# close it
-			for key in self.shelves.keys():
-				self.shelves[key].close()
+
+		for key in self.shelves.keys():
+			# Close all open shelves
+			self.shelves[key].close()
 			
-	def pgsqlConnect(self, database, user, password, host = 'localhost', port = '5432', connection_factory=None, cursor_factory=None, async=False):
+	def pgsqlConnect(self, database, user, password, host = 'localhost', port = '5432', connection_factory=None, cursor_factory=None, async=False, autocommit=True):
 		""" Sets the class variable pgsql as the connection
 		    to a postgresql database.
 		"""
@@ -43,6 +42,7 @@ class Data(object):
 			host = host,
 			port = str(port)
 		)
+		self.pgsql.autocommit = autocommit
 
 	def select(self, cols, table, where = None, params = None):
 		""" NOTICE: THE PARAMETERS "cols", "table"
