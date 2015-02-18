@@ -4,7 +4,7 @@ import os.path
 
 class Data(object):
 	def __init__(self):
-		self.pgsql = None
+		self._pgsql = None
 		self.csv = dict()
 		# TODO: Support this
 		self.shelves = dict()
@@ -22,10 +22,10 @@ class Data(object):
 		# Explicit delete CSV dictionary
 		del self.csv
 		
-		if self.pgsql is not None:
+		if self._pgsql is not None:
 			# If a postgresql connection
 			# was established, close it
-			self.pgsql.close()	
+			self._pgsql.close()	
 
 		for key in self.shelves.keys():
 			# Close all open shelves
@@ -35,14 +35,22 @@ class Data(object):
 		""" Sets the class variable pgsql as the connection
 		    to a postgresql database.
 		"""
-		self.pgsql = psycopg2.connect(
+		self._pgsql = psycopg2.connect(
 			database = database,
 			user = user,
 			password = password,
 			host = host,
 			port = str(port)
 		)
-		self.pgsql.autocommit = autocommit
+		self._pgsql.autocommit = autocommit
+	
+	def pgCursor(self):
+		""" Returns a cursor object for
+		    the postgresql connection
+		    or None if connection not
+		    open.
+		"""
+		return self._pgsql.cursor() if self._pgsql is not None else None
 
 	def select(self, cols, table, where = None, params = None):
 		""" NOTICE: THE PARAMETERS "cols", "table"
@@ -68,7 +76,7 @@ class Data(object):
 			stm += "{:s} ".format(cols)
 		stm += "FROM {:s} ".format(table)
 		
-		with self.pgsql.cursor() as cur:
+		with self._pgsql.cursor() as cur:
 			if where is not None:
 				stm += "WHERE {:s};"
 				stm = cur.mogrify(stm, args)
@@ -94,7 +102,7 @@ class Data(object):
 			return 0
 			
 		stm = "INSERT INTO {:s} ({:s}) VALUES ".format(table, cols)
-		with self.pgsql.cursor() as cur:
+		with self._pgsql.cursor() as cur:
 			s = '(' + ','.join(['%s']*len(values[0])) + ')'
 			for i in xrange(0, len(values), self.chunkSize):
 				# Some stm might become to long to transmit,
@@ -119,7 +127,7 @@ class Data(object):
 		if len(values) == 0:
 			return 0
 		stm = "UPDATE {:s} SET {:s} WHERE {:s};".format(table, what, where)
-		with self.pgsql.cursor() as cur:
+		with self._pgsql.cursor() as cur:
 			cur.executemany(stm, values)
 		return len(values)
 		
