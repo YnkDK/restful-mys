@@ -6,7 +6,7 @@ from common.data import Data
 # Import the controllers
 from controller.hello_world import HelloWorld
 
-# Initialzie app
+# Initialize app
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
 
@@ -17,7 +17,7 @@ app.upload_folder = UPLOAD_FOLDER
 @app.after_request
 def add_header(response):
 	"""
-	Add headers to tell the caller that it shoudn't cache the data,
+	Add headers to tell the caller that it shouldn't cache the data,
 	in addition the content type is set to json
 	"""
 	response.headers['Cache-Control'] = 'no-cache, no-store, max-age=0'
