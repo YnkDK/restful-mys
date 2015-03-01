@@ -8,7 +8,7 @@ __pycache__/
 *~
 
 # Ignore real config file
-api/config.py
+restful_mys/common/config.py
 
 # Distribution / packaging
 .Python
