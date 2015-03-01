@@ -44,7 +44,7 @@ def log_exception(sender, exception, **extra):
     :param extra: Any extra information bound to the exception
     """
     # TODO: Log exceptions
-    print exception, extra
+    print sender, exception, extra
 
 
 got_request_exception.connect(log_exception, app)

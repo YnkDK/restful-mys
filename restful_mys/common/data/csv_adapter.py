@@ -48,10 +48,11 @@ class CSV(object):
         :return: A generator
         """
         if alias not in self._csv:
-            abort(500,
-                  message='Internal Server Error',
-                  method='data.csv.csv_read',
-                  error_message='Alias not found: {:s}'.format(str(alias))
+            abort(
+                500,
+                message='Internal Server Error',
+                method='data.csv.csv_read',
+                error_message='Alias not found: {:s}'.format(str(alias))
             )
 
         with open(self._csv[alias], 'rb') as csv_file:
@@ -75,10 +76,11 @@ class CSV(object):
         :rtype: tuple
         """
         if len(indices) != len(types):
-            abort(500,
-                  message='Internal Server Error',
-                  method='data.csv.csv_typed_row',
-                  error_message='Each output entry must have a type, i.e. "indices" and "types" must have same length'
+            abort(
+                500,
+                message='Internal Server Error',
+                method='data.csv.csv_typed_row',
+                error_message='Each output entry must have a type, i.e. "indices" and "types" must have same length'
             )
 
         res = []
@@ -92,10 +94,11 @@ class CSV(object):
                 try:
                     typed = t(cur)
                 except TypeError:
-                    abort(500,
-                          message='Internal Server Error',
-                          method='data.csv.csv_typed_row',
-                          error_message=TypeError.message
+                    abort(
+                        500,
+                        message='Internal Server Error',
+                        method='data.csv.csv_typed_row',
+                        error_message=TypeError.message
                     )
                 else:
                     res.append(typed)

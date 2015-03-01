@@ -77,6 +77,7 @@ class Auth(Model):
         """
         # Make the random sequence dependent on the user login
         random.seed(login)
+        # noinspection PyUnusedLocal
         peppers = [random.randint(0, 9999999) for r in xrange(255)]
 
         # Jump to a request dependent state to shuffle the peppers.

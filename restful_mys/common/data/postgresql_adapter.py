@@ -47,10 +47,11 @@ class PostgreSQL(object):
                             settings['autocommit']
                         )
                 except KeyError:
-                    abort(500,
-                          message='Internal Server Error',
-                          method='data.postgresql.__init__',
-                          error_message=KeyError.message
+                    abort(
+                        500,
+                        message='Internal Server Error',
+                        method='data.postgresql.__init__',
+                        error_message=KeyError.message
                     )
         super(PostgreSQL, self).__init__()
 
@@ -106,10 +107,11 @@ class PostgreSQL(object):
         try:
             connection = self._pg_db[self.PG_DEFAULT_DB if alias is None else alias]
         except KeyError:
-            abort(500,
-                  message='Internal Server Error',
-                  method='data.postgresql.connection',
-                  error_message='Not connect to the database: {:s}'.format(str(alias))
+            abort(
+                500,
+                message='Internal Server Error',
+                method='data.postgresql.connection',
+                error_message='Not connect to the database: {:s}'.format(str(alias))
             )
         else:
             return connection
