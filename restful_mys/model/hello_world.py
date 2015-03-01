@@ -1,4 +1,5 @@
 import random
+from os.path import abspath
 
 from ..common.model import Model
 
@@ -24,7 +25,7 @@ class HelloWorld(Model):
         :rtype: str
         """
         # List of all allowed unisex names in Denmark
-        self.csv_add('names', 'data/names.csv')
+        self.csv_add('names', abspath('data/names.csv'))
         # Get all names
         names = [x for x in self.csv_read('names')]
         # Clean up

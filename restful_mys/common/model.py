@@ -7,10 +7,12 @@ class Model(PostgreSQL, CSV):
         """
         Initializes super classes
         """
-        super(Model, self).__init__()
+        PostgreSQL.__init__(self)
+        CSV.__init__(self)
 
     def __del__(self):
         """
         Invokes deletion in super classes
         """
-        super(Model, self).__del__()
+        PostgreSQL.__del__(self)
+        CSV.__del__(self)
