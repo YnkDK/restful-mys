@@ -4,9 +4,9 @@ import time
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import bcrypt
+from flask import abort
 
-from ..common.model import Model
-from ..common.config import SALT, SECRET_KEY
+from restful_mys.model.model import Model
 
 
 class Auth(Model):
@@ -19,6 +19,22 @@ class Auth(Model):
     of this class, since Secure Resources are to validate tokens.
     """
 
+    def __init__(self):
+        super(Auth, self).__init__()
+
+        self.secret_key = self.CONFIG['SECRET_KEY']
+        self.salt = self.CONFIG['SALT']
+
+        try:
+            self.pg_connect('default', self.CONFIG['PG_DB']['default'])
+        except KeyError:
+            abort(
+                500,
+                message='Internal Server Error',
+                method='model.auth.__init__',
+                error_message=KeyError.message
+            )
+
     def new_password(self, login, password):
         """
         Generates an encrypted password for a given user
@@ -28,8 +44,8 @@ class Auth(Model):
         :return: Encrypted login, Encrypted password
         :rtype : tuple
         """
-        login = self._sha512('{:s}{:s}'.format(login, SALT))
-        pw = self._pepper_hash(self._get_peppers(login).next(), password)
+        login = self._sha512('{:s}{:s}'.format(login, self.salt))
+        pw = self._pepper_hash(self._get_peppers(login).next(), password, self.salt)
         hashed = bcrypt.hashpw(pw, bcrypt.gensalt(7))
         return login, hashed
 
@@ -44,25 +60,29 @@ class Auth(Model):
         :rtype: tuple
         """
 
-        login = self._sha512('{:s}{:s}'.format(login, SALT))
+        login = self._sha512('{:s}{:s}'.format(login, self.salt))
         # Select id/hashed password from database
         try:
-            res = self.pg_select('id, password', 'auth', 'login = %s', (login,)).next()
+            res = self.pg_select('id, password, auto_token', 'auth', 'login = %s', (login,)).next()
         except StopIteration:
             # Login not found
             # TODO: Sleep for some seconds here
             return None, None
 
         # Validate the login information given
-        login_id, hashed = res
+        login_id, hashed, auto_token = res
         for pepper in self._get_peppers(login):
             # Add some pepper to the password
-            pw = self._pepper_hash(pepper, password)
+            pw = self._pepper_hash(pepper, password, self.salt)
             if bcrypt.hashpw(pw, hashed) == hashed:
                 # The password was correct! Create token and return it.
-                s = Serializer(SECRET_KEY, expires_in=expire)
-                return login_id, s.dumps(
-                    {'id': login_id, 'expires_in': expire, 'expires_at': int(time.time() + expire)})
+                s = Serializer(self.secret_key, expires_in=expire)
+                return login_id, s.dumps({
+                    'id': login_id,
+                    'expires_in': expire,
+                    'expires_at': int(time.time() + expire),
+                    'auto_token': auto_token
+                })
         return None, None
 
     @staticmethod
@@ -90,7 +110,7 @@ class Auth(Model):
             yield pepper
 
     @staticmethod
-    def _pepper_hash(pepper, password):
+    def _pepper_hash(pepper, password, salt):
         """
         Appends 8 digits in front of user password and concatenates application salt
         to the user password. In the current configuration this leaves a password of
@@ -99,10 +119,11 @@ class Auth(Model):
 
         :param pepper: Any digit that should be used as pepper
         :param password: The plain text password
+        :param salt: Application salt
         :return: pepper + password + application salt
         :rtype: str
         """
-        return '{:0>8}{:s}{:s}'.format(pepper, password, SALT)
+        return '{:0>8}{:s}{:s}'.format(pepper, password, salt)
 
     @staticmethod
     def _sha512(message):

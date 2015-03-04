@@ -1,20 +1,17 @@
-from flask.ext import restful
-from flask.ext.restful import reqparse
-from flask import jsonify
-
-from ..model.hello_world import HelloWorld as Model
+from restful_mys.controller.secure_resource import SecureResource
 
 
-class HelloWorld(restful.Resource):
+class HelloWorld(SecureResource):
     def __init__(self):
         """
-        Parses the 'name' argument and sets up the model
+        Parse optional parameters and set model instance.
         """
-        super(HelloWorld, self).__init__()
+        super(HelloWorld, self).__init__(self.CONFIG['SECRET_KEY'])
+        # Initialize the model
+        self.model = self.MODEL()
 
-        rp = reqparse.RequestParser()
         # Add argument
-        rp.add_argument(
+        self.request_parser.add_argument(
             name='name',
             default='',
             required=False,
@@ -22,9 +19,7 @@ class HelloWorld(restful.Resource):
             help='Name of the one to greet. Default: Random unisex name'
         )
         # Parse given arguments
-        self.args = rp.parse_args()
-
-        self.model = Model()
+        self.args = self.request_parser.parse_args()
 
     def get(self):
         """
@@ -32,8 +27,9 @@ class HelloWorld(restful.Resource):
         the model
         :return: A Hello World message
         """
+
         if self.args['name'] == '':
             name = self.model.get_random_name()
         else:
             name = self.args['name']
-        return jsonify({'message': 'Hello {:s}!'.format(name)})
+        return self.jsonify({'message': 'Hello {:s}!'.format(name)})

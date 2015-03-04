@@ -4,7 +4,7 @@ from flask.ext.restful import Resource, reqparse, abort
 from flask import jsonify
 
 from ..model.auth import Auth as Model
-from restful_mys.common.secure_resource import SecureResource
+from restful_mys.controller.secure_resource import SecureResource
 
 
 class Auth(Resource):
@@ -18,14 +18,13 @@ class Auth(Resource):
 
         self.model = Model()
 
-    @staticmethod
-    def get():
+    def get(self):
         """
         Checks if a token is valid.
 
         :return: OK if token was valid, Unauthorized if invalid or Request Timeout if expired
         """
-        sr = SecureResource()
+        sr = SecureResource(self.CONFIG['SECRET_KEY'])
         return sr.jsonify({'message': 'OK'})
 
     def post(self):

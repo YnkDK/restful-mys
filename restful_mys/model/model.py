@@ -1,5 +1,5 @@
-from data.postgresql_adapter import PostgreSQL
-from data.csv_adapter import CSV
+from ..common.data.postgresql_adapter import PostgreSQL
+from ..common.data.csv_adapter import CSV
 
 
 class Model(PostgreSQL, CSV):

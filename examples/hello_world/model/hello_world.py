@@ -1,7 +1,7 @@
 import random
 from os.path import abspath
 
-from ..common.model import Model
+from restful_mys.model.model import Model
 
 
 class HelloWorld(Model):
