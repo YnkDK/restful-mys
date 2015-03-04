@@ -21,15 +21,6 @@
             margin: 0 auto;
         }
 
-        .form-signin .form-signin-heading,
-        .form-signin .checkbox {
-            margin-bottom: 10px;
-        }
-
-        .form-signin .checkbox {
-            font-weight: normal;
-        }
-
         .form-signin .form-control {
             position: relative;
             height: auto;
@@ -135,8 +126,7 @@
                 $("#login").show();
                 $("#content").hide();
                 $("#errorMessage").html(errorThrown);
-                $("#alert").removeClass('hidden');
-                $("#alert").show();
+                $("#alert").removeClass('hidden').show();
             });
         }
 
@@ -157,8 +147,7 @@
                 $("#login").show();
                 $("#content").hide();
                 $("#errorMessage").html(errorThrown);
-                $("#alert").removeClass('hidden');
-                $("#alert").show();
+                $("#alert").removeClass('hidden').show();
             });
         }
 
@@ -181,10 +170,8 @@
                 getRandomMessage();
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 $("#errorMessage").html(errorThrown);
-                $("#alert").removeClass('hidden');
-                $("#alert").show();
-                $("#inputPassword").val('');
-                $("#inputPassword").focus();
+                $("#alert").removeClass('hidden').show();
+                $("#inputPassword").val('').focus();
             });
             event.preventDefault();
         });
