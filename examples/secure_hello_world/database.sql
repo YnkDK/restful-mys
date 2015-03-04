@@ -61,6 +61,6 @@ IS 'Faster access for equal look-up, i.e. login = XXX';
 -- Insert the user 'mys' with password 'mypassword'
 INSERT INTO auth (login, password)
 VALUES (
-  "e89856aef4a258d48b780925ada4173bd6bebd6ce467058a7a9ba96c2d0ff1cdd51221c2cd18b94d7aea8fafb799eacd6beb0acaf84f99d83ead309ecd17a903",
-  "$2a$07$sU0YdNJCEWGEMtVd4ho.3.KUyBMP7pfo6/AgKdTUG6ofPLdSlkTo2"
+  'e89856aef4a258d48b780925ada4173bd6bebd6ce467058a7a9ba96c2d0ff1cdd51221c2cd18b94d7aea8fafb799eacd6beb0acaf84f99d83ead309ecd17a903',
+  '$2a$07$sU0YdNJCEWGEMtVd4ho.3.KUyBMP7pfo6/AgKdTUG6ofPLdSlkTo2'
 );
