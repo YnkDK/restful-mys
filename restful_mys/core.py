@@ -48,6 +48,10 @@ class Core(object):
             if 'Content-Security-Policy' in response.headers:
                 del response.headers['Content-Security-Policy ']
 
+            if app.debug:
+                response.headers['Access-Control-Allow-Origin'] = '*'
+                response.headers['Access-Control-Allow-Headers'] = 'application/json'
+
             return response
 
         # Set the logger if given
