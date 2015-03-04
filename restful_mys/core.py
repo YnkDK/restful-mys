@@ -5,12 +5,13 @@ from flask.ext import restful
 
 
 class Core(object):
-    def __init__(self, config, logger=None):
+    def __init__(self, config={}, logger=None):
         """
         Initializes the API with the given config and an optional logger
 
         :param config: Config dictionary available for all controllers.
                        Flask specific config can be set, see http://flask.pocoo.org/docs/0.10/config/
+                       defaults to {} if not provided
         :param logger: A function like, def log_exception(sender, exception, **extra): pass, defaults to None if not
                        provided.
         """

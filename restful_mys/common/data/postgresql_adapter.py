@@ -240,7 +240,7 @@ class PostgreSQL(object):
         """
         if len(values) == 0:
             return 0
-        stm = "UPDATE {:s} SET {:s} WHERE {:s};".format(table, what, where)
+        stm = 'UPDATE {:s} SET {:s} WHERE {:s};'.format(table, what, where)
         with self.pg_cursor(alias) as cur:
             cur.executemany(stm, values)
             row_count = cur.rowcount
