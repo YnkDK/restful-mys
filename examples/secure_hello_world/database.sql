@@ -1,6 +1,6 @@
 -- Database: restful
 
--- DROP DATABASE restful;
+DROP DATABASE IF EXISTS restful;
 
 CREATE DATABASE restful
 WITH ENCODING = 'UTF8'
@@ -15,7 +15,8 @@ IS 'Toy database for the restful-mys application';
 
 -- Sequence: auth_id_seq
 
--- DROP SEQUENCE auth_id_seq;
+DROP TABLE IF EXISTS auth;
+DROP SEQUENCE IF EXISTS auth_id_seq;
 
 CREATE SEQUENCE auth_id_seq
 INCREMENT 1
@@ -26,11 +27,10 @@ CACHE 1;
 
 -- Table: auth
 
--- DROP TABLE auth;
 
 CREATE TABLE auth
 (
-  id         BIGSERIAL      NOT NULL DEFAULT nextval('auth_id_seq'), -- User ID
+  id BIGSERIAL NOT NULL, -- User ID
   login      CHARACTER(128) NOT NULL, -- Hexadecimal digest of login
   password   CHARACTER(60)  NOT NULL, -- The encrypted password, e.g. $2a$07$p7dX8FhxTNirJVXa9zMjHe4GXAQRNpTwIcK2Gfsi1L85BePO1DUii
   auto_token BOOLEAN        NOT NULL DEFAULT TRUE,
@@ -49,7 +49,7 @@ COMMENT ON COLUMN auth.password IS 'The encrypted password, e.g. $2a$07$p7dX8Fhx
 
 -- Index: login_hash
 
--- DROP INDEX login_hash;
+DROP INDEX IF EXISTS login_hash;
 
 CREATE INDEX login_hash
 ON auth
