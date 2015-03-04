@@ -30,10 +30,10 @@ CACHE 1;
 
 CREATE TABLE auth
 (
-  id BIGSERIAL NOT NULL, -- User ID
+  id         BIGINT         NOT NULL DEFAULT nextval('auth_id_seq' :: REGCLASS), -- User ID
   login      CHARACTER(128) NOT NULL, -- Hexadecimal digest of login
   password   CHARACTER(60)  NOT NULL, -- The encrypted password, e.g. $2a$07$p7dX8FhxTNirJVXa9zMjHe4GXAQRNpTwIcK2Gfsi1L85BePO1DUii
-  auto_token BOOLEAN        NOT NULL DEFAULT TRUE,
+  auto_token BOOLEAN        NOT NULL DEFAULT TRUE, -- True if a new token should be generated on each request, False otherwise
   CONSTRAINT login_id_key PRIMARY KEY (id),
   CONSTRAINT login_unique UNIQUE (login)
 )
