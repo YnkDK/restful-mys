@@ -1,3 +1,4 @@
+from os import urandom
 import random
 import hashlib
 import time
@@ -81,7 +82,8 @@ class Auth(Model):
                     'id': login_id,
                     'expires_in': expire,
                     'expires_at': int(time.time() + expire),
-                    'auto_token': auto_token
+                    'auto_token': auto_token,
+                    '_r': urandom(3).encode('base-64')
                 })
         return None, None
 

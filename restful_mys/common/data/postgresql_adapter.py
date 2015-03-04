@@ -114,7 +114,12 @@ class PostgreSQL(object):
                 async=async
             )
         except psycopg2.OperationalError as e:
-            abort(500, message='Internal Server Error', method='data.postgresql.pg_connect', error_message=e.message)
+            abort(
+                http_status_code=500,
+                message='Internal Server Error',
+                method='data.postgresql.pg_connect',
+                error_message='Could not connect to database. Check that the configuration is correct.'
+            )
         else:
             # Successfully connected: Honor autocommit setting
             pgsql.autocommit = autocommit

@@ -1,4 +1,5 @@
 import time
+from os import urandom
 
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired, BadSignature
@@ -21,7 +22,9 @@ def validate_token(token, secret_key):
         return 408, None, None
     except BadSignature:
         return 401, None, None
-
+    # A 3 bytes of random numbers to scramble the token. This is useful when when a user makes multiple request
+    # in a short time period.
+    data['_r'] = urandom(3).encode('base-64')
     if 'auto_token' in data and data['auto_token']:
         try:
             s = Serializer(secret_key, expires_in=data['expires_in'])
